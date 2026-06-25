@@ -1,1 +1,1353 @@
+```html
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>આંગણવાડી માસિક ઇન્વેન્ટરી - સ્લાઇડ શો</title>
+    <!-- Google Fonts for Gujarati & Sanskrit aesthetic and Clean UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --app-bg: #092139; /* Your actual App Deep Navy Blue */
+            --app-header-bg: #0a3054;
+            --app-accent: #fbc02d; /* Gold */
+            --app-logout: #c62828; /* Red Logout */
+            --card-wheat: #fef9c3; /* Wheat light yellow */
+            --card-rice: #dcfce7; /* Rice light green */
+            --card-oil: #ffe4e6; /* Oil light rose */
+            --card-chana: #f3e8ff; /* Chana light purple */
+            --text-dark: #1e293b;
+            --text-light: #f8fafc;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans Gujarati', 'Poppins', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Top Navigation Header for presentation */
+        .pres-header {
+            background-color: #1e293b;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #334155;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .pres-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fbc02d;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pres-meta {
+            font-size: 12px;
+            background: #0f172a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        /* Master Slide Container */
+        .slide-container {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        /* Slide item */
+        .slide {
+            display: none;
+            width: 100%;
+            background: #1e293b;
+            border-radius: 16px;
+            border: 1px solid #334155;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Grid Layouts - Responsive first */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            align-items: center;
+        }
+
+        @media(min-width: 850px) {
+            .grid-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Slide Content Text Styling */
+        .slide-info {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .slide-badge {
+            background-color: #0284c7;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            align-self: flex-start;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .slide-info h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #38bdf8;
+            line-height: 1.3;
+        }
+
+        .slide-info p {
+            font-size: 15px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        /* Custom Bullet List */
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 28px;
+            font-size: 14px;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .bullet-list li i {
+            position: absolute;
+            left: 0;
+            top: 3px;
+            color: #10b981;
+            font-size: 16px;
+        }
+
+        /* Beautiful Mockup Window representing the App */
+        .phone-mockup {
+            background-color: var(--app-bg);
+            border: 6px solid #475569;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            font-family: 'Poppins', 'Noto Sans Gujarati', sans-serif;
+        }
+
+        /* App Mockup Top Header */
+        .app-top-header {
+            background-color: var(--app-header-bg);
+            padding: 12px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-bottom: 2px solid #0f172a;
+        }
+
+        .app-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-title {
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .app-logout-btn {
+            background-color: var(--app-logout);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: none;
+        }
+
+        .center-badge {
+            color: var(--app-accent);
+            font-size: 11px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* App Menu Tabs mimicking your image precisely */
+        .app-tabs {
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 4px 4px 4px;
+            background-color: var(--app-header-bg);
+        }
+
+        .app-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 6px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .app-tab.active {
+            color: var(--app-accent);
+            border-bottom: 3px solid var(--app-accent);
+        }
+
+        .app-tab i {
+            font-size: 14px;
+        }
+
+        /* App Scrollable Content Area */
+        .app-content {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            padding: 10px;
+            height: 380px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* --- SCREEN 1: Inventory Sheet Mockup --- */
+        .inventory-box-title {
+            background-color: #1e5fa0;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 8px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .item-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+        }
+
+        .badge-wheat { background-color: var(--card-wheat); color: #854d0e; }
+        .badge-rice { background-color: var(--card-rice); color: #166534; }
+        .badge-oil { background-color: var(--card-oil); color: #9f1239; }
+        .badge-chana { background-color: var(--card-chana); color: #6b21a8; }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+
+        .input-box {
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 2px 6px;
+            width: 70px;
+            text-align: right;
+            font-size: 11px;
+            background: #f8fafc;
+            color: #334155;
+            font-weight: bold;
+        }
+
+        .summary-stats {
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 4px;
+            margin-top: 6px;
+            font-size: 10px;
+            color: #475569;
+        }
+
+        .bold-blue { color: #1d4ed8; font-weight: bold; }
+        .bold-green { color: #15803d; font-weight: bold; }
+        .bold-orange { color: #b45309; font-weight: bold; }
+
+        /* --- SCREEN 2: Calendar Mockup --- */
+        .cal-month-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            text-align: center;
+        }
+
+        .cal-header-cell {
+            background-color: #1e40af;
+            color: white;
+            font-weight: bold;
+            font-size: 9px;
+            padding: 4px 0;
+            border-radius: 3px;
+        }
+
+        .cal-header-cell.sunday {
+            background-color: var(--app-logout);
+        }
+
+        .cal-day-cell {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            height: 38px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2px;
+            font-size: 9px;
+        }
+
+        .cal-day-cell .num {
+            font-weight: bold;
+            color: #475569;
+        }
+
+        .cal-day-cell .val {
+            color: #166534;
+            font-weight: bold;
+            background-color: #f0fdf4;
+            border-radius: 2px;
+            font-size: 8px;
+        }
+
+        .cal-day-cell.holiday {
+            background-color: #fef2f2;
+        }
+
+        .cal-day-cell.holiday .num {
+            color: #ef4444;
+        }
+
+        .cal-day-cell.selected {
+            border: 2px solid #eab308;
+            background-color: #fef9c3;
+        }
+
+        .cal-summary {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 6px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            font-size: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* --- SCREEN 3: Daily Report Table --- */
+        .report-table-wrapper {
+            background: white;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #cbd5e1;
+            height: 100%;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9px;
+            text-align: center;
+            min-width: 320px;
+        }
+
+        .report-table th {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 4px;
+            border: 1px solid #334155;
+            font-weight: 600;
+        }
+
+        .report-table td {
+            padding: 4px;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+
+        .report-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .report-table tr.sunday-row {
+            background-color: #fef2f2;
+            color: #ef4444;
+        }
+
+        /* --- SCREEN 4: Admin Controls --- */
+        .admin-nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #cbd5e1;
+            margin-bottom: 10px;
+        }
+
+        .admin-nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 6px;
+            font-weight: bold;
+            font-size: 11px;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .admin-nav-tab.active {
+            color: #6b21a8;
+            border-bottom: 2px solid #6b21a8;
+            background: white;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .filter-section {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            margin-bottom: 8px;
+        }
+
+        .filter-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        .filter-btn-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-filter {
+            background-color: #1d4ed8;
+            color: white;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .btn-reset {
+            background-color: #10b981;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Title Slides Layout (Centred, bold) */
+        .title-slide {
+            text-align: center;
+            padding: 40px 10px;
+        }
+
+        .title-slide h1 {
+            font-size: 30px;
+            color: #eab308;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .title-slide p {
+            font-size: 16px;
+            color: #cbd5e1;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+        }
+
+        .title-icon {
+            font-size: 60px;
+            color: #38bdf8;
+            margin-bottom: 20px;
+        }
+
+        /* Slide Control Panel at bottom */
+        .pres-footer {
+            background-color: #1e293b;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #334155;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .control-btn {
+            background-color: #334155;
+            color: #f1f5f9;
+            border: 1px solid #475569;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .control-btn:hover:not(:disabled) {
+            background-color: #475569;
+            border-color: #64748b;
+        }
+
+        .control-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .control-btn.primary {
+            background-color: #0284c7;
+            border-color: #0369a1;
+        }
+
+        .control-btn.primary:hover {
+            background-color: #0369a1;
+        }
+
+        /* Highlight WhatsApp Share Button */
+        .control-btn.whatsapp-share {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .control-btn.whatsapp-share:hover {
+            background-color: #20ba5a;
+        }
+
+        .slide-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dot.active {
+            background-color: #fbc02d;
+            transform: scale(1.3);
+        }
+
+        /* CTA Section Styles */
+        .cta-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media(min-width: 768px) {
+            .cta-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .cta-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .cta-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--app-accent);
+        }
+
+        .cta-icon {
+            font-size: 40px;
+            color: var(--app-accent);
+        }
+
+        .email-badge {
+            background: #1e293b;
+            border: 1px solid #334155;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
+            color: #38bdf8;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .email-badge:hover {
+            border-color: #38bdf8;
+            background: #0f172a;
+        }
+
+        /* Portrait layout fixes for very small mobile screens */
+        @media(max-width: 480px) {
+            .pres-header {
+                padding: 10px;
+            }
+            .pres-title {
+                font-size: 13px;
+            }
+            .slide {
+                padding: 16px;
+                border-radius: 12px;
+            }
+            .slide-info h2 {
+                font-size: 20px;
+            }
+            .control-btn {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide Header -->
+    <div class="pres-header">
+        <div class="pres-title">
+            <i class="fa-solid fa-wheat-awn"></i> આંગણવાડી માસિક પત્રક અને વહીવટી સ્લાઇડ શો
+        </div>
+        <div class="pres-meta">
+            જૂન ૨૦૨૬
+        </div>
+    </div>
+
+    <!-- Slides Viewport Container -->
+    <div class="slide-container" id="slideContainer">
+
+        <!-- SLIDE 1: Title & Welcome Slide -->
+        <div class="slide active">
+            <div class="title-slide">
+                <div class="title-icon">
+                    <i class="fa-solid fa-cubes-stacked"></i>
+                </div>
+                <h1>આંગણવાડી માસિક ઇન્વેન્ટરી અને વપરાશ પત્રક સિસ્ટમ</h1>
+                <p>ડિજિટલ ટેક્નોલોજીના માધ્યમથી દૈનિક અને માસિક વપરાશ, સ્ટોક આવક-જાવક અને સુપરવાઈઝરી તપાસની સમગ્ર પ્રક્રિયાનું સચોટ એકત્રીકરણ કરતું આધુનિક સોલ્યુશન.</p>
+                
+                <div style="display: inline-flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <span style="background: #334155; padding: 6px 12px; border-radius: 6px; font-size: 13px; border: 1px solid #475569;">
+                        <i class="fa-solid fa-cloud text-sky-400"></i> ૧૦૦% સેક્યોર ક્લાઉડ
+                    </span>
+                    <span style="background: #334155; padding: 6px 12px; border-radius: 6px; font-size: 13px; border: 1px solid #475569;">
+                        <i class="fa-solid fa-mobile-screen text-emerald-400"></i> ગમે તે મોબાઇલમાં ચાલશે
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Inventory Dashboard UI Representation (Image 1) -->
+        <div class="slide">
+            <div class="grid-layout">
+                <div class="slide-info">
+                    <span class="slide-badge">સ્ક્રીન ૧</span>
+                    <h2>૧. એપ્લિકેશન મેનૂ અને ઇન્વેન્ટરી ડેશબોર્ડ</h2>
+                    <p>એપની મુખ્ય હોમસ્ક્રીન તેમજ ઇન્વેન્ટરી ડેશબોર્ડ અત્યંત સરળ, રંગબેરંગી અને ગુજરાતી ભાષામાં તૈયાર કરવામાં આવ્યું છે.</p>
+                    <ul class="bullet-list">
+                        <li><i class="fa-solid fa-box-open"></i> <strong>ઇન્વેન્ટરી વિગતો:</strong> જૂન ૨૦૨૬ ના માસ માટે ઘઉં, ચોખા, તેલ અને ચણાનો ઓપનિંગ સ્ટોક, નવી આવક તેમજ સચોટ વપરાશ જોઈ શકાય છે.</li>
+                        <li><i class="fa-solid fa-calculator"></i> <strong>ઓટો-કેલ્ક્યુલેશન:</strong> ઓપનિંગ અને આવકનો આપોઆપ સરવાળો કરી તેમાંથી વપરાશ બાદ થાય છે અને 'બંધ સિલક' રિયલ ટાઈમ ગણાય છે.</li>
+                        <li><i class="fa-solid fa-triangle-exclamation"></i> <strong>ચેતવણી સિસ્ટમ:</strong> જો કોઈ વસ્તુનો સ્ટોક માઈનસમાં જાય (જેમ કે ચોખા -૧.૧૭૦ કિલો), તો તે લાલ કલરમાં અલર્ટ બતાવે છે જેથી સ્ટોક ઓર્ડર કરી શકાય.</li>
+                    </ul>
+                </div>
+                <!-- Interactive High-Fidelity Mockup of Image 1 -->
+                <div class="phone-mockup">
+                    <div class="app-top-header">
+                        <div class="app-title-row">
+                            <span class="app-title">🌾 My Daily Report</span>
+                            <button class="app-logout-btn"><i class="fa-solid fa-door-open"></i> Logout</button>
+                        </div>
+                        <div class="center-badge">🏢 કેન્દ્ર: Aw05</div>
+                    </div>
+                    <div class="app-tabs">
+                        <div class="app-tab active"><i class="fa-solid fa-box-open"></i> ઇન્વેન્ટરી</div>
+                        <div class="app-tab"><i class="fa-solid fa-calendar-days"></i> કૅલેન્ડર</div>
+                        <div class="app-tab"><i class="fa-solid fa-chart-bar"></i> માસિક</div>
+                        <div class="app-tab"><i class="fa-solid fa-file-lines"></i> રિપોર્ટ</div>
+                        <div class="app-tab"><i class="fa-solid fa-shield-halved"></i> Admin</div>
+                    </div>
+                    <div class="app-content">
+                        <div class="inventory-box-title">
+                            <span>📦 ઇન્વેન્ટરી (જૂન 2026)</span>
+                            <span style="background: rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 4px;">Aw05</span>
+                        </div>
+                        <div class="item-grid">
+                            <!-- Wheat Card -->
+                            <div class="item-card">
+                                <div class="item-header-badge badge-wheat">🌾 ઘઉં</div>
+                                <div class="input-row"><span>ઉઘડતી (kg):</span> <input type="text" class="input-box" value="8.99" readonly></div>
+                                <div class="input-row"><span>આવક (kg):</span> <input type="text" class="input-box" value="30" readonly></div>
+                                <div class="summary-stats">
+                                    <div>કુલ ઉઘડતી: <span class="bold-blue">38.990 kg</span></div>
+                                    <div>વપરાશ: <span class="bold-orange">28.090 kg</span></div>
+                                    <div>બંધ સિલક: <span class="bold-green">10.900 kg</span></div>
+                                </div>
+                            </div>
+                            <!-- Rice Card -->
+                            <div class="item-card">
+                                <div class="item-header-badge badge-rice">🍚 ચોખા</div>
+                                <div class="input-row"><span>ઉઘડતી (kg):</span> <input type="text" class="input-box" value="14.74" readonly></div>
+                                <div class="input-row"><span>આવક (kg):</span> <input type="text" class="input-box" value="0" readonly></div>
+                                <div class="summary-stats">
+                                    <div>કુલ ઉઘડતી: <span class="bold-blue">14.740 kg</span></div>
+                                    <div>વપરાશ: <span class="bold-orange">15.910 kg</span></div>
+                                    <div style="color: #ef4444; font-weight: bold;">બંધ સિલક: -1.170 kg (સ્ટોક ખાલી)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Interactive Calendar (Image 2) -->
+        <div class="slide">
+            <div class="grid-layout">
+                <div class="slide-info">
+                    <span class="slide-badge">સ્ક્રીન ૨</span>
+                    <h2>૨. કૅલેન્ડર પેજ - દૈનિક લાભાર્થી ટ્રેકિંગ</h2>
+                    <p>દરરોજ હાજર રહેલા લાભાર્થીઓની ચોક્કસ સંખ્યા કેલેન્ડર વ્યુ દ્વારા અત્યંત સરળતાથી નોંધી અને જોઈ શકાય છે.</p>
+                    <ul class="bullet-list">
+                        <li><i class="fa-solid fa-calendar-check"></i> <strong>દૈનિક વ્યુ:</strong> કેલેન્ડરની દરેક તારીખના બ્લોકની અંદર જ તે દિવસે હાજર રહેલા લાભાર્થી બાળકોની સચોટ સંખ્યા (જેમ કે ૨૩, ૨૨, ૨૧) સ્પષ્ટ દેખાય છે.</li>
+                        <li><i class="fa-solid fa-umbrella-beach"></i> <strong>રવિવાર અને રજાઓ:</strong> રવિવાર (૨, ૭, ૧૪, ૨૧, ૨૮) આપોઆપ લાલ રંગથી અલગ તારવવામાં આવે છે જેથી ગણતરીમાં ભૂલ ન થાય.</li>
+                        <li><i class="fa-solid fa-square-poll-horizontal"></i> <strong>ઓટોમેટિક માસિક સરવાળો:</strong> કેલેન્ડરની નીચે જ કુલ કાર્યકારી દિવસો (૨૬), કુલ લાભાર્થીઓની સંખ્યા (૫૫0) અને માસિક દૈનિક સરેરાશ (૨૧.૨) આપોઆપ ગણાઈને આવી જાય છે.</li>
+                    </ul>
+                </div>
+                <!-- Interactive High-Fidelity Mockup of Image 2 -->
+                <div class="phone-mockup">
+                    <div class="app-top-header">
+                        <div class="app-title-row">
+                            <span class="app-title">🌾 My Daily Report</span>
+                            <button class="app-logout-btn"><i class="fa-solid fa-door-open"></i> Logout</button>
+                        </div>
+                        <div class="center-badge">🏢 કેન્દ્ર: Aw05</div>
+                    </div>
+                    <div class="app-tabs">
+                        <div class="app-tab"><i class="fa-solid fa-box-open"></i> ઇન્વેન્ટરી</div>
+                        <div class="app-tab active"><i class="fa-solid fa-calendar-days"></i> કૅલેન્ડર</div>
+                        <div class="app-tab"><i class="fa-solid fa-chart-bar"></i> માસિક</div>
+                        <div class="app-tab"><i class="fa-solid fa-file-lines"></i> રિપોર્ટ</div>
+                        <div class="app-tab"><i class="fa-solid fa-shield-halved"></i> Admin</div>
+                    </div>
+                    <div class="app-content">
+                        <div class="cal-month-title">
+                            <span style="background:#cbd5e1; padding: 2px 6px; border-radius:4px; font-size:10px;"><i class="fa-solid fa-chevron-left"></i></span>
+                            <span>જૂન ૨૦૨૬</span>
+                            <span style="background:#cbd5e1; padding: 2px 6px; border-radius:4px; font-size:10px;"><i class="fa-solid fa-chevron-right"></i></span>
+                        </div>
+                        <div class="cal-grid">
+                            <div class="cal-header-cell sunday">ર</div>
+                            <div class="cal-header-cell">સો</div>
+                            <div class="cal-header-cell">મં</div>
+                            <div class="cal-header-cell">બુ</div>
+                            <div class="cal-header-cell">ગુ</div>
+                            <div class="cal-header-cell">શુ</div>
+                            <div class="cal-header-cell">શ</div>
+
+                            <!-- Calendar days recreating your image -->
+                            <div class="cal-day-cell holiday"><span class="num"></span></div>
+                            <div class="cal-day-cell"><span class="num">1</span><span class="val">23</span></div>
+                            <div class="cal-day-cell"><span class="num">2</span><span class="val">22</span></div>
+                            <div class="cal-day-cell"><span class="num">3</span><span class="val">22</span></div>
+                            <div class="cal-day-cell"><span class="num">4</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">5</span><span class="val">22</span></div>
+                            <div class="cal-day-cell"><span class="num">6</span><span class="val">22</span></div>
+
+                            <div class="cal-day-cell holiday"><span class="num">7</span><span class="val" style="color:#ef4444; background:#fee2e2;">--</span></div>
+                            <div class="cal-day-cell"><span class="num">8</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">9</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">10</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">11</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">12</span><span class="val">22</span></div>
+                            <div class="cal-day-cell"><span class="num">13</span><span class="val">22</span></div>
+                            
+                            <div class="cal-day-cell holiday"><span class="num">14</span><span class="val" style="color:#ef4444; background:#fee2e2;">--</span></div>
+                            <div class="cal-day-cell"><span class="num">15</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">16</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">17</span><span class="val">23</span></div>
+                            <div class="cal-day-cell"><span class="num">18</span><span class="val">19</span></div>
+                            <div class="cal-day-cell"><span class="num">19</span><span class="val">20</span></div>
+                            <div class="cal-day-cell"><span class="num">20</span><span class="val">20</span></div>
+
+                            <div class="cal-day-cell holiday"><span class="num">21</span><span class="val" style="color:#ef4444; background:#fee2e2;">--</span></div>
+                            <div class="cal-day-cell"><span class="num">22</span><span class="val">20</span></div>
+                            <div class="cal-day-cell"><span class="num">23</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">24</span><span class="val">21</span></div>
+                            <div class="cal-day-cell selected"><span class="num">25</span><span class="val">22</span></div>
+                            <div class="cal-day-cell"><span class="num">26</span><span class="val">21</span></div>
+                            <div class="cal-day-cell"><span class="num">27</span><span class="val">22</span></div>
+                        </div>
+                        <div class="cal-summary">
+                            <div><div>કુલ દિવસ</div><div style="color:#1e40af; font-size:12px;">26</div></div>
+                            <div><div>કુલ લાભાર્થી</div><div style="color:#1e40af; font-size:12px;">550</div></div>
+                            <div><div>સરેરાશ/દિ.</div><div style="color:#1e40af; font-size:12px;">21.2</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Monthly Daily base Usage Sheet (Image 3) -->
+        <div class="slide">
+            <div class="grid-layout">
+                <div class="slide-info">
+                    <span class="slide-badge">સ્ક્રીન ૩</span>
+                    <h2>૩. માસિક દૈનિક વપરાશ અને બંધ સિલક પત્રક</h2>
+                    <p>આ આખી સિસ્ટમનું સૌથી મહત્વનું કેલ્ક્યુલેશન પેજ છે, જેમાં આખા મહિનાની રોજેરોજની એન્ટ્રી સિસ્ટમ દ્વારા આપોઆપ ગણાઈ જાય છે.</p>
+                    <ul class="bullet-list">
+                        <li><i class="fa-solid fa-table-list"></i> <strong>ઓટોમેટીક દૈનિક ગણતરી:</strong> હાજર બાળકોની સંખ્યા (સં.) ના આધારે ઘઉં અને ચોખાનો દૈનિક વપરાશ ગ્રામ (g) માં સિસ્ટમ ઓટોમેટિક કેલ્ક્યુલેટ કરે છે.</li>
+                        <li><i class="fa-solid fa-chart-line"></i> <strong>સિલક અપડેટ (Closing Stock):</strong> તારીખવાર બાલભોગ કે અનાજનો કુલ વપરાશ બાદ થતાં, તે દિવસના અંતે વધતો સ્ટોક (kg) માં ઓટોમેટિક અપડેટ થતો રહે છે.</li>
+                        <li><i class="fa-solid fa-calendar-day"></i> રવિવારના દિવસે ઓટોમેટીક રીતે 'રવિ' અને લીટીઓ આવી જાય છે જેથી કોઈ મેન્યુઅલ એન્ટ્રી કરવી પડતી નથી.</li>
+                    </ul>
+                </div>
+                <!-- Interactive High-Fidelity Mockup of Image 3 -->
+                <div class="phone-mockup">
+                    <div class="app-top-header">
+                        <div class="app-title-row">
+                            <span class="app-title">🌾 My Daily Report</span>
+                            <button class="app-logout-btn"><i class="fa-solid fa-door-open"></i> Logout</button>
+                        </div>
+                        <div class="center-badge">🏢 કેન્દ્ર: Aw05</div>
+                    </div>
+                    <div class="app-content" style="padding: 4px;">
+                        <div class="report-table-wrapper">
+                            <table class="report-table">
+                                <thead>
+                                    <tr style="background:#0f3057;">
+                                        <th rowspan="2">તારીખ</th>
+                                        <th rowspan="2">વાર</th>
+                                        <th rowspan="2">સં.</th>
+                                        <th colspan="3" style="background:#854d0e;">🌾 ઘઉં</th>
+                                        <th colspan="3" style="background:#166534;">🍚 ચોખા</th>
+                                    </tr>
+                                    <tr style="background:#1e3a8a;">
+                                        <th>બ.વ.(g)</th>
+                                        <th>કુલ(g)</th>
+                                        <th>સિલક(kg)</th>
+                                        <th>સ.વ.(g)</th>
+                                        <th>બ.વ.(g)</th>
+                                        <th>કુલ(g)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td><td>સોમ</td><td class="bold-blue">23</td>
+                                        <td>1150</td><td style="color:#b45309; font-weight:bold;">1840</td><td class="bold-green">37.150</td>
+                                        <td>--</td><td>--</td><td>--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td><td>મંગળ</td><td class="bold-blue">22</td>
+                                        <td>1100</td><td style="color:#b45309; font-weight:bold;">1100</td><td class="bold-green">36.050</td>
+                                        <td>660</td><td>--</td><td style="color:#b45309; font-weight:bold;">660</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td><td>બુધ</td><td class="bold-blue">22</td>
+                                        <td>--</td><td style="color:#b45309; font-weight:bold;">660</td><td class="bold-green">35.390</td>
+                                        <td>--</td><td>1100</td><td style="color:#b45309; font-weight:bold;">1100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td><td>ગુરૂ</td><td class="bold-blue">21</td>
+                                        <td>--</td><td style="color:#b45309; font-weight:bold;">630</td><td class="bold-green">34.760</td>
+                                        <td>--</td><td>1050</td><td style="color:#b45309; font-weight:bold;">1050</td>
+                                    </tr>
+                                    <tr>
+                                        <td>5</td><td>શુક્ર</td><td class="bold-blue">22</td>
+                                        <td>1100</td><td style="color:#b45309; font-weight:bold;">1760</td><td class="bold-green">33.000</td>
+                                        <td>--</td><td>--</td><td>--</td>
+                                    </tr>
+                                    <tr class="sunday-row">
+                                        <td>7</td><td>રવિ</td><td>--</td>
+                                        <td>--</td><td>--</td><td class="bold-green">32.340</td>
+                                        <td>--</td><td>--</td><td>--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Admin Screen & Log view (Image 4) -->
+        <div class="slide">
+            <div class="grid-layout">
+                <div class="slide-info">
+                    <span class="slide-badge">સ્ક્રીન ૪</span>
+                    <h2>૪. એડમિન પોર્ટલ - લાઈવ લોગ વ્યુઅર</h2>
+                    <p>સુપરવાઈઝર બહેનો અને વહીવટી સ્ટાફ માટે આ એક પાવરફુલ મોનિટરિંગ ટૂલ છે, જેનાથી કોઈ પણ વિગત છૂપી રહેતી નથી.</p>
+                    <ul class="bullet-list">
+                        <li><i class="fa-solid fa-users-gear"></i> <strong>રજિસ્ટર્ડ કેન્દ્રો:</strong> એક ક્લિકમાં બધા જ સક્રિય કેન્દ્રો (જેમ કે Aw05, 05) ની યાદી જોઈ શકાય છે.</li>
+                        <li><i class="fa-solid fa-clock-rotate-left"></i> <strong>લાઈવ ઓડિટ લોગ:</strong> કયા કેન્દ્રે કઈ તારીખે અને કેટલા વાગ્યે કયું એક્શન (દા.ત. LOGIN કે ડેટા એન્ટ્રી) કર્યું, તેની મિલીસેકન્ડ વાઈઝ એન્ટ્રી આપોઆપ સેવ થતી રહે છે.</li>
+                        <li><i class="fa-solid fa-filter"></i> <strong>સ્માર્ટ ફિલ્ટર:</strong> સુપરવાઈઝર બહેનો સેન્ટર વાઈઝ અથવા એક્શન વાઈઝ ફિલ્ટર બટનથી આખી યાદીને તુરંત શોધી શકે છે.</li>
+                    </ul>
+                </div>
+                <!-- Interactive High-Fidelity Mockup of Image 4 -->
+                <div class="phone-mockup">
+                    <div class="app-top-header" style="background:#1e1b4b;">
+                        <div class="app-title-row">
+                            <span class="app-title">🛡️ Admin Portal</span>
+                            <button class="app-logout-btn" style="background:#4c1d95;"><i class="fa-solid fa-lock"></i> Secure</button>
+                        </div>
+                        <div class="center-badge" style="color:#a78bfa;">સુપરવાઈઝર કંટ્રોલ રૂમ</div>
+                    </div>
+                    <div class="app-tabs" style="background:#1e1b4b;">
+                        <div class="app-tab"><i class="fa-solid fa-box-open"></i> ઇન્વેન્ટરી</div>
+                        <div class="app-tab"><i class="fa-solid fa-calendar-days"></i> કૅલેન્ડર</div>
+                        <div class="app-tab active"><i class="fa-solid fa-shield-halved"></i> Admin</div>
+                    </div>
+                    <div class="app-content">
+                        <div class="admin-nav-tabs">
+                            <div class="admin-nav-tab active">📋 Log Viewer</div>
+                            <div class="admin-nav-tab">📊 એકત્રીકરણ</div>
+                        </div>
+                        <div style="font-size:10px; font-weight:bold; color:#15803d; margin-bottom:4px;">
+                            🏢 Registered Centers (2): <span style="background:#dcfce7; padding:2px 6px; border-radius:10px;">Aw05</span>
+                        </div>
+                        
+                        <!-- Search Filters -->
+                        <div class="filter-section">
+                            <div class="filter-inputs">
+                                <select class="filter-select"><option>Aw05</option></select>
+                                <select class="filter-select"><option>All Action</option></select>
+                            </div>
+                            <div class="filter-btn-row">
+                                <button class="btn-filter">Filter</button>
+                                <button class="btn-reset"><i class="fa-solid fa-arrows-rotate"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Logs list recreating your exact image -->
+                        <div class="report-table-wrapper">
+                            <table class="report-table">
+                                <thead style="background:#1e1b4b;">
+                                    <tr>
+                                        <th>📅 સમય</th>
+                                        <th>🏢 Center</th>
+                                        <th>⚡ Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>25/6/2026 2:39:36 PM</td>
+                                        <td class="bold-blue">Aw05</td>
+                                        <td><span style="background:#fef9c3; color:#854d0e; padding:2px 4px; border-radius:4px; font-weight:bold;">LOGIN</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>25/6/2026 2:39:29 PM</td>
+                                        <td class="bold-blue">Aw05</td>
+                                        <td><span style="background:#fef9c3; color:#854d0e; padding:2px 4px; border-radius:4px; font-weight:bold;">LOGIN</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>25/6/2026 8:49:22 AM</td>
+                                        <td class="bold-blue">Aw05</td>
+                                        <td><span style="background:#fef9c3; color:#854d0e; padding:2px 4px; border-radius:4px; font-weight:bold;">LOGIN</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Master Consolidation for Supervisors (Image 5) -->
+        <div class="slide">
+            <div class="grid-layout">
+                <div class="slide-info">
+                    <span class="slide-badge">સ્ક્રીન ૫</span>
+                    <h2>૫. માસિક એકત્રીકરણ (Supervisor Consolidation)</h2>
+                    <p>આ ફીચર સુપરવાઈઝર બહેનો અને વહીવટી તંત્ર માટે બહુ જ મહત્વનું છે, જેનાથી કલાકોનું કામ સેકન્ડોમાં થાય છે.</p>
+                    <ul class="bullet-list">
+                        <li><i class="fa-solid fa-grip"></i> <strong>ઓલ-ઇન-વન વ્યુ:</strong> સેક્ટરના તમામ આંગણવાડી કેન્દ્રોનો ડેટા (ઘઉં, ચોખા, તેલ વગેરેની આવક, વપરાશ અને સિલક) એક જ સ્ક્રીન પર હોરીઝોન્ટલી જોઈ શકાય છે.</li>
+                        <li><i class="fa-solid fa-plus-minus"></i> <strong>ગ્રાન્ડ ટોટલ (Grand Total):</strong> નીચે તમામ કેન્દ્રોના કુલ સ્ટોક અને વપરાશનો ઓટો-સરવાળો થાય છે, જેથી સરકારી રિપોર્ટ બનાવવો અત્યંત આસાન બને છે.</li>
+                        <li><i class="fa-solid fa-eye"></i> <strong>સરળ ઓડિટિંગ:</strong> કયા કેન્દ્રમાં રેશન ખૂટી ગયું છે અથવા પડ્યું રહ્યું છે તે સુપરવાઈઝર બહેનો એક નજરમાં જોઈને યોગ્ય માર્ગદર્શન આપી શકે છે.</li>
+                    </ul>
+                </div>
+                <!-- Interactive High-Fidelity Mockup of Image 5 -->
+                <div class="phone-mockup" style="max-width: 450px;"> <!-- Made a bit wider to represent horizontal data beautifully -->
+                    <div class="app-top-header" style="background:#0f3057;">
+                        <div class="app-title-row">
+                            <span class="app-title">📊 માસિક એકત્રીકરણ રીપોર્ટ</span>
+                            <span style="font-size:11px; background:#1e5fa0; padding:2px 6px; border-radius:4px;">જૂન ૨૦૨૬</span>
+                        </div>
+                    </div>
+                    <div class="app-content" style="padding:4px; background:#fff;">
+                        <div class="report-table-wrapper" style="max-height:300px;">
+                            <table class="report-table" style="font-size:8px;">
+                                <thead>
+                                    <tr style="background:#1e3a8a; color:white;">
+                                        <th rowspan="2">🏢 કેન્દ્ર</th>
+                                        <th colspan="3" style="background:#854d0e;">🌾 ઘઉં</th>
+                                        <th colspan="3" style="background:#166534;">🍚 ચોખા</th>
+                                        <th colspan="3" style="background:#b91c1c;">🛢️ તેલ</th>
+                                    </tr>
+                                    <tr style="background:#3b82f6; color:white;">
+                                        <th>વપરાશ</th>
+                                        <th>કુલ</th>
+                                        <th>સિલક</th>
+                                        <th>વપરાશ</th>
+                                        <th>કુલ</th>
+                                        <th>સિલક</th>
+                                        <th>વપરાશ</th>
+                                        <th>કુલ</th>
+                                        <th>સિલક</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><b>9227804951</b></td>
+                                        <td>17500</td><td>32680</td><td style="color:#166534; font-weight:bold;">167.32</td>
+                                        <td>14100</td><td>17880</td><td style="color:#166534; font-weight:bold;">382.12</td>
+                                        <td>5056</td><td>8200</td><td style="color:#166534; font-weight:bold;">82.10</td>
+                                    </tr>
+                                    <tr style="background:#f0fdf4;">
+                                        <td><b>Aw05</b></td>
+                                        <td>14800</td><td>28090</td><td style="color:#166534; font-weight:bold;">10.900</td>
+                                        <td>12700</td><td>15910</td><td style="color:red; font-weight:bold;">-1.170</td>
+                                        <td>4400</td><td>7100</td><td style="color:#166534; font-weight:bold;">11.20</td>
+                                    </tr>
+                                    <tr style="background:#fef9c3; font-weight:bold; border-top: 2px solid #000;">
+                                        <td>Grand Total</td>
+                                        <td>32300</td><td>60770</td><td style="color:#166534;">178.22</td>
+                                        <td>26800</td><td>33790</td><td style="color:#166534;">380.95</td>
+                                        <td>9456</td><td>15300</td><td style="color:#166534;">93.30</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="font-size:10px; color:#475569; text-align:right; margin-top:8px; font-style:italic;">
+                            * ૨ સક્રિય કેન્દ્રોનો સંયુક્ત અહેવાલ
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Summary & Strategic Impact -->
+        <div class="slide">
+            <div class="title-slide">
+                <div class="title-icon" style="color: #10b981;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h1 style="color: #10b981;">તકનીકી સુવિધાઓ અને ડેટા સુરક્ષા</h1>
+                <p>આંગણવાડી માસિક પત્રક સોફ્ટવેરમાં અદભુત ડેટા સુરક્ષા અને લવચીકતા પ્રદાન કરવામાં આવી છે:</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; text-align: left; margin-top: 20px;">
+                    <div style="background: #1e293b; padding: 15px; border-radius: 10px; border-left: 4px solid #10b981;">
+                        <h4 style="color:#38bdf8; font-size:15px; margin-bottom:5px;"><i class="fa-solid fa-cloud"></i> ૧૦૦% સેક્યોર ક્લાઉડ સ્ટોરેજ</h4>
+                        <p style="font-size:12px; color:#94a3b8; margin:0;">બધા જ કેન્દ્રોનો ડેટા ક્લાઉડ સર્વર પર એકદમ સુરક્ષિત સેવ થાય છે. ફોન બગડી જાય તો પણ ડેટા સુરક્ષિત રહેશે.</p>
+                    </div>
+                    <div style="background: #1e293b; padding: 15px; border-radius: 10px; border-left: 4px solid #fbc02d;">
+                        <h4 style="color:#38bdf8; font-size:15px; margin-bottom:5px;"><i class="fa-solid fa-mobile-button"></i> યુનિવર્સલ સપોર્ટ</h4>
+                        <p style="font-size:12px; color:#94a3b8; margin:0;">એપ લાઈટવેઈટ છે અને ગમે તે એન્ડ્રોઇડ કે આઈફોન મોબાઈલમાં કોઈ પણ જાતના હેંગિંગ વગર સ્મૂધ ચાલે છે.</p>
+                    </div>
+                    <div style="background: #1e293b; padding: 15px; border-radius: 10px; border-left: 4px solid #ef4444;">
+                        <h4 style="color:#38bdf8; font-size:15px; margin-bottom:5px;"><i class="fa-solid fa-fingerprint"></i> સેન્ટ્રલ ઓડિટ મોનિટરિંગ</h4>
+                        <p style="font-size:12px; color:#94a3b8; margin:0;">દરેક એન્ટ્રી પર લોગ રેકોર્ડ હોવાથી વહીવટી પારદર્શિતા અને સિસ્ટમની શુદ્ધતા ૧૦૦% જળવાય છે.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Call To Action / Get the App (New Slide) -->
+        <div class="slide">
+            <div class="title-slide">
+                <div class="title-icon" style="color: var(--app-accent);">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                </div>
+                <h1 style="color: var(--app-accent); font-size: 32px;">આંગણવાડી એપ મેળવવા માટે સંપર્ક કરો</h1>
+                <p style="font-size: 16px; color: #cbd5e1; margin-bottom: 25px;">અમારા આ ડિજિટલ અભિયાન સાથે જોડાઓ અને તમારા વહીવટને પેપરલેસ અને સચોટ બનાવો!</p>
+
+                <div class="cta-container">
+                    <div class="cta-card">
+                        <i class="fa-solid fa-comment-dots cta-icon"></i>
+                        <h3 style="color: white; font-size: 18px;">કોમેન્ટ બોક્સ</h3>
+                        <p style="font-size: 13px; color: #94a3b8; margin: 0;">એપ્લિકેશનની લિંક મેળવવા માટે નીચે <b>કોમેન્ટ બોક્સમાં</b> તમારો સંદેશ લખો.</p>
+                    </div>
+                    
+                    <div class="cta-card">
+                        <i class="fa-solid fa-envelope-open-text cta-icon" style="color: #38bdf8;"></i>
+                        <h3 style="color: white; font-size: 18px;">સીધો ઇમેઇલ સંપર્ક</h3>
+                        <p style="font-size: 13px; color: #94a3b8; margin: 0;">અથવા અમારા ડેવલપરનો સીધો સંપર્ક કરી માહિતી મેળવો.</p>
+                        <a href="mailto:devenramanuj1@gmail.com" class="email-badge">
+                            <i class="fa-solid fa-paper-plane"></i> devenramanuj1@gmail.com
+                        </a>
+                    </div>
+                </div>
+
+                <div style="margin-top: 35px; font-size: 14px; color: #64748b; font-weight: bold; border-top: 1px dashed #334155; padding-top: 15px;">
+                    Designed & Developed by Deven Ramanuj 💻
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Presentation Navigation Footer -->
+    <div class="pres-footer">
+        <button class="control-btn" id="prevBtn" onclick="moveSlide(-1)">
+            <i class="fa-solid fa-chevron-left"></i> પાછળ
+        </button>
+        
+        <div class="slide-dots" id="slideDots">
+            <!-- Dynamically populated via Javascript -->
+        </div>
+
+        <button class="control-btn primary" id="nextBtn" onclick="moveSlide(1)">
+            આગળ <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <!-- WhatsApp Share Button -->
+        <button class="control-btn whatsapp-share" id="whatsappBtn" onclick="shareOnWhatsApp()">
+            <i class="fa-brands fa-whatsapp"></i> શેર કરો
+        </button>
+    </div>
+
+    <div style="text-align:center; color:#64748b; font-size:11px; padding-bottom:10px; background:#0f172a;">
+        કીબોર્ડના <b>ડાબા / જમણા એરો (Arrow Keys)</b> અથવા સ્ક્રીન પર <b>ડાબે/જમણે સ્વાઇપ</b> કરીને સ્લાઇડ બદલો.
+    </div>
+
+    <script>
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dotsContainer = document.getElementById('slideDots');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Create Indicators
+        function createIndicators() {
+            dotsContainer.innerHTML = '';
+            slides.forEach((slide, idx) => {
+                const dot = document.createElement('div');
+                dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+                dot.onclick = () => showSlide(idx);
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        // Show Slide by Index
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            document.querySelectorAll('.dot').forEach(dot => dot.classList.remove('active'));
+
+            slides[index].classList.add('active');
+            document.querySelectorAll('.dot')[index].classList.add('active');
+
+            currentIdx = index;
+
+            // Enable/disable buttons
+            prevBtn.disabled = (index === 0);
+            if (index === slides.length - 1) {
+                nextBtn.innerHTML = 'સમાપ્ત <i class="fa-solid fa-circle-check"></i>';
+                nextBtn.classList.remove('primary');
+                nextBtn.style.backgroundColor = '#10b981';
+            } else {
+                nextBtn.innerHTML = 'આગળ <i class="fa-solid fa-chevron-right"></i>';
+                nextBtn.classList.add('primary');
+                nextBtn.style.backgroundColor = '';
+            }
+        }
+
+        // Move slide relative
+        function moveSlide(step) {
+            let nextIndex = currentIdx + step;
+            if (nextIndex >= 0 && nextIndex < slides.length) {
+                showSlide(nextIndex);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                moveSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                moveSlide(-1);
+            }
+        });
+
+        // Swipe Gestures for Mobile
+        let touchstartX = 0;
+        let touchendX = 0;
+        const gestureZone = document.getElementById('slideContainer');
+
+        gestureZone.addEventListener('touchstart', function(event) {
+            touchstartX = event.changedTouches[0].screenX;
+        }, false);
+
+        gestureZone.addEventListener('touchend', function(event) {
+            touchendX = event.changedTouches[0].screenX;
+            handleGesture();
+        }, false);
+
+        function handleGesture() {
+            if (touchendX < touchstartX - 50) {
+                // Swiped Left -> Next Slide
+                moveSlide(1);
+            }
+            if (touchendX > touchstartX + 50) {
+                // Swiped Right -> Previous Slide
+                moveSlide(-1);
+            }
+        }
+
+        // WhatsApp Sharing Logic with precise text provided by Devendrabhai
+        function shareOnWhatsApp() {
+            const currentUrl = window.location.href;
+            const title = "📊 *આંગણવાડી માસિક ઇન્વેન્ટરી અને વપરાશ પત્રક સોફ્ટવેર* \n\n☁️ એપનો ડેટા ક્લાઉડ (Cloud) મા સેવ થાય છે અને ૧૦૦% સુરક્ષિત (Secure) છે.\n📱 આ સોફ્ટવેર ગમે તે મોબાઇલમા એકદમ સ્મૂધ ચાલશે.\n\n🔗 *લાઈવ સ્લાઇડ પ્રેઝન્ટેશન જોવા માટે લિંક:*";
+            
+            let shareText = "";
+            if (currentUrl.startsWith('http')) {
+                shareText = `${title}\n👉 ${currentUrl}\n\n💬 *એપ લિંક માટે સંપર્ક કોમેન્ટ માં લખો અથવા સંપર્ક કરો:* \n📧 devenramanuj1@gmail.com`;
+            } else {
+                shareText = `${title}\n👉 [આંગણવાડી સ્લાઇડ શો ફાઇલ ઓપન કરો]\n\n💬 *એપ લિંક માટે સંપર્ક કોમેન્ટ માં લખો અથવા સંપર્ક કરો:* \n📧 devenramanuj1@gmail.com`;
+            }
+
+            const encodedText = encodeURIComponent(shareText);
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Initialize presentation
+        window.onload = () => {
+            createIndicators();
+            showSlide(0);
+        };
+    </script>
+</body>
+</html>
+
+```
 
